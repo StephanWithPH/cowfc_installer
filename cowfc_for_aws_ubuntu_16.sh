@@ -39,7 +39,7 @@ fi
 # We will test internet connectivity using ping
 if ping -c 2 github.com >/dev/nul; then
     echo "Internet is OK"
-elif ping -c 2 torproject.org >/dev/nul; then
+elif ping -c 2 google.com >/dev/nul; then
     echo "Internet is OK"
 else
     echo "Internet Connection Test Failed!"
@@ -66,7 +66,7 @@ IP=""             # Used for user input
 interface=""      # Used for user input
 mod1="proxy"      # This is a proxy mod that is dependent on the other 2
 mod2="proxy_http" # This is related to mod1
-mod3="php7.1"
+mod3="php7.0"
 UPDATE_FILE="$0.tmp"
 UPDATE_BASE="https://raw.githubusercontent.com/EnergyCube/cowfc_installer/master/cowfc.sh"
 # Functions
@@ -272,33 +272,36 @@ function install_required_packages() {
     echo "echo "Installing required packages...""
     # Add required package requires packages
     sudo apt install curl git net-tools dnsmasq -y
-    # Add PHP 7.1 repo
-    if [ ! -f "/var/www/.php71-added" ]; then
-        echo "Adding the PHP 7.1 repository. Please follow any prompts."
+    # Add PHP 7.0 repo
+    if [ ! -f "/var/www/.php70-added" ]; then
+        echo "Adding the PHP 7.0 repository. Please follow any prompts."
+        echo "Currently only PHP7.0 is available for Ubuntu 16, it will conflict with the admin page code, you may need to update some PHP code in /var/www/html later in order to be able to see the admin page. If the admin page is not so important to you then you can just leave it there."
+        echo "The directory /var/www/html is not yet available at this moment, but you will see it later after setup is completed."
         if ! add-apt-repository ppa:ondrej/php; then
             apt-get install --force-yes software-properties-common python-software-properties -y
-            add-apt-repository ppa:ondrej/php
+            LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+            # LC_ALL=C.UTF-8 sudo add-apt-repository ppa:ondrej/php
         fi
         sleep 2s
         echo "Creating file to tell the script you already added the repo"
-        touch "/var/www/.php71-added"
+        touch "/var/www/.php70-added"
         echo "I will now reboot your server to free up resources for the next phase"
         sleep 3s
         reboot
         exit
     else
-        echo "The PHP 7.1 repo is already added. If you believe this to ben an error, please type 'rm -rf /var/www/.php71-added' to remove the file which prevents the repository from being added again."
+        echo "The PHP 7.0 repo is already added. If you believe this to be an error, please type 'rm -rf /var/www/.php70-added' to remove the file which prevents the repository from being added again."
     fi
     # Fix dpkg problems that happened somehow
     dpkg --configure -a
-    echo "Updating & installing PHP 7.1 onto your system..."
+    echo "Updating & installing PHP 7.0 onto your system..."
     apt-get update
-    apt-get install --force-yes php7.1 -y
+    apt-get install --force-yes php7.0 -y
     # Install the other required packages
     apt-get install --force-yes apache2 python2.7 python-twisted dnsmasq git curl -y
 }
 function config_mysql() {
-    echo "We will now configure MYSQL server."
+    echo "We will now configure MYSQL server. Default username is root and password is passwordhere, you can change it later."
     debconf-set-selections <<<'mysql-server mysql-server/root_password password passwordhere'
     debconf-set-selections <<<'mysql-server mysql-server/root_password_again password passwordhere'
     apt-get -y install mysql-server
@@ -307,8 +310,10 @@ function config_mysql() {
     # The below sed command has NOT been tested so we don't know if this will work or not.
     #sed -i -e 's/passwordhere/passwordhere/g' /var/www/html/_site/AdminPage.php
     # Next we will install two more packages to make mysql and sqlite work with PHP
-    apt-get install --force-yes php7.1-mysql -y
-    apt-get install --force-yes sqlite php7.1-sqlite3 -y
+    # apt-get install --force-yes php7.1-mysql -y
+    apt-get install --force-yes php7.0-mysql -y
+    # apt-get install --force-yes sqlite php7.1-sqlite3 -y
+    apt-get install --force-yes sqlite php7.0-sqlite3 -y
     # Now we will set up our first admin user
     echo "Now we're going to set up our first Admin Portal user."
     read -rp "Please enter the username you wish to use: " firstuser
@@ -483,7 +488,7 @@ if [ "$CANRUN" == "TRUE" ]; then
         # Let's set up Apache now
         create_apache_vh_nintendo
         create_apache_vh_wiimmfi
-        apache_mods     # Enable reverse proxy mod and PHP 7.1
+        apache_mods     # Enable reverse proxy mod and PHP 7.0
         install_website # Install the web contents for CoWFC
         config_mysql    # We will set up the mysql password as "passwordhere" and create our first user
         re              # Set up reCaptcha
