@@ -71,9 +71,6 @@ UPDATE_FILE="$0.tmp"
 UPDATE_BASE="https://raw.githubusercontent.com/EnergyCube/cowfc_installer/master/cowfc.sh"
 # Functions
 
-function update() {
-}
-
 function create_apache_vh_nintendo() {
     # This function will create virtual hosts for Nintendo's domains in Apache
     echo "Creating Nintendo virtual hosts...."
