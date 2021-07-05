@@ -72,22 +72,7 @@ UPDATE_BASE="https://raw.githubusercontent.com/EnergyCube/cowfc_installer/master
 # Functions
 
 function update() {
-    # The following lines will check for an update to this script if the -s switch
-    # is not used.
-
-    # Original code by Dennis Simpson
-    # Modified by Kyle Warwick-Mathieu
-    echo "Checking if script is up to date, please wait"
-    wget -nv -O "$UPDATE_FILE" "$UPDATE_BASE" >&/dev/null
-    if ! diff "$0" "$UPDATE_FILE" >&/dev/null && [ -s "$UPDATE_FILE" ]; then
-        mv "$UPDATE_FILE" "$0"
-        chmod +x "$0"
-        echo "$0 updated"
-        "$0" -s
-        exit
-    else
-        rm "$UPDATE_FILE" # If no updates are available, simply remove the file
-    fi
+    
 }
 
 function create_apache_vh_nintendo() {
@@ -421,27 +406,7 @@ function install_website() {
 # MAIN
 # Call update function
 if [ "$1" != "-s" ]; then # If there is no -s argument then run the updater
-    update                # This will call our update function
-fi
-#echo "******************************************* WARNING!*******************
-#*****************************************************************************
-#IT HAS BEEN DISCOVERED THAT BUILDS ON THE LATEST UBUNTU UPDATES WILL FAIL!
-#*****************************************************************************
-#"
-#read -p "Press [ENTER] to continue at your own risk, or ctrl+c to abort."
-# First we will check if we are on Ubuntu - this isn't 100% going to work,
-# but if we're running Debian, it should be enough for what we need this check
-# to do.
-if [ -f /etc/lsb-release ]; then
-    if grep -q "14.04" /etc/lsb-release || grep -q "16.04" /etc/lsb-release || grep -q "18.04" /etc/lsb-release ||  grep -q "20.04" /etc/lsb-release; then
-        CANRUN="TRUE"
-    elif [ -f /var/www/.aws_install ]; then
-        CANRUN="TRUE"
-    else
-        echo "It looks like you are not running on a supported OS."
-        echo "Please open an issue and request support for this platform."
-        echo "Actually Ubuntu 14.04, 16.04 and 20.04 are supported."
-    fi
+    CANRUN="TRUE"
 fi
 
 # Determine if our script can run
