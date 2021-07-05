@@ -70,6 +70,13 @@ mod3="php7.1"
 UPDATE_FILE="$0.tmp"
 UPDATE_BASE="https://raw.githubusercontent.com/EnergyCube/cowfc_installer/master/cowfc.sh"
 # Functions
+
+function update() {
+
+        rm "$UPDATE_FILE" # If no updates are available, simply remove the file
+
+}
+
 function create_apache_vh_nintendo() {
     # This function will create virtual hosts for Nintendo's domains in Apache
     echo "Creating Nintendo virtual hosts...."
@@ -310,9 +317,7 @@ function config_mysql() {
 }
 function re() {
     echo "For added security, we recommend setting up Google's reCaptcha.
-
 However, not many people would care about this, so we're making it optional.
-
 Feel free to press the ENTER key at the prompt, to skip reCaptcha setup, or 'y' to proceed with recaptcha setup."
     read -rp "Would you like to set up reCaptcha on this server? [y/N]: " recaptchacontinue
     if [ "$recaptchacontinue" == y ]; then
@@ -413,14 +418,12 @@ fi
 # but if we're running Debian, it should be enough for what we need this check
 # to do.
 if [ -f /etc/lsb-release ]; then
-    if grep -q "14.04" /etc/lsb-release || grep -q "18.04" /etc/lsb-release || grep -q "20.04" /etc/lsb-release; then
+    if grep -q "14.04" /etc/lsb-release || grep -q "16.04" /etc/lsb-release || grep -q "20.04" /etc/lsb-release; then
         CANRUN="TRUE"
     elif [ -f /var/www/.aws_install ]; then
         CANRUN="TRUE"
     else
-        echo "It looks like you are not running on a supported OS."
-        echo "Please open an issue and request support for this platform."
-        echo "Actually Ubuntu 14.04, 16.04 and 20.04 are supported."
+        CANRUN="TRUE"
     fi
 fi
 
