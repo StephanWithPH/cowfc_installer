@@ -433,7 +433,7 @@ fi
 # but if we're running Debian, it should be enough for what we need this check
 # to do.
 if [ -f /etc/lsb-release ]; then
-    if grep -q "14.04" /etc/lsb-release || grep -q "16.04" /etc/lsb-release || grep -q "20.04" /etc/lsb-release; then
+    if grep -q "14.04" /etc/lsb-release || grep -q "16.04" /etc/lsb-release || grep -q "18.04" /etc/lsb-release ||  grep -q "20.04" /etc/lsb-release; then
         CANRUN="TRUE"
     elif [ -f /var/www/.aws_install ]; then
         CANRUN="TRUE"
