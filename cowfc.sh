@@ -72,7 +72,6 @@ UPDATE_BASE="https://raw.githubusercontent.com/EnergyCube/cowfc_installer/master
 # Functions
 
 function update() {
-    
 }
 
 function create_apache_vh_nintendo() {
@@ -405,9 +404,7 @@ function install_website() {
 
 # MAIN
 # Call update function
-if [ "$1" != "-s" ]; then # If there is no -s argument then run the updater
-    CANRUN="TRUE"
-fi
+CANRUN="TRUE"
 
 # Determine if our script can run
 if [ "$CANRUN" == "TRUE" ]; then
